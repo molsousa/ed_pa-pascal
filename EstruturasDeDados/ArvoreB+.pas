@@ -115,46 +115,43 @@ function split(r : BMais; var m : integer) : BMais;
 
 var
     q, i : integer;
-    y : BMais;
 
 begin
-    new(y);
+    new(split);
 
     for i := 0 to ORDEM do
-        y^.filhos[i] := nil;
+        split^.filhos[i] := nil;
 
     q := Trunc(r^.num_chaves / 2);
     m := r^.chave[q];
 
     if r^.folha then
     begin
-       y^.num_chaves := (r^.num_chaves - q);
+       split^.num_chaves := (r^.num_chaves - q);
 
-       y^.folha := true;
+       split^.folha := true;
        r^.num_chaves := q;
 
-       for i := 0 to y^.num_chaves-1 do
+       for i := 0 to split^.num_chaves-1 do
         begin
-            y^.chave[i] := r^.chave[q+i];
+            split^.chave[i] := r^.chave[q+i];
         end;
     end
     else
     begin
-        y^.filhos[0] := r^.filhos[q+1];
+        split^.filhos[0] := r^.filhos[q+1];
 
-        y^.num_chaves := (r^.num_chaves - q - 1);
+        split^.num_chaves := (r^.num_chaves - q - 1);
 
-        y^.folha := false;
+        split^.folha := false;
         r^.num_chaves := q;
 
-        for i := 0 to y^.num_chaves-1 do
+        for i := 0 to split^.num_chaves-1 do
         begin
-            y^.chave[i] := r^.chave[q+i+1];
-            y^.filhos[i+1] := r^.filhos[q+i+2];
+            split^.chave[i] := r^.chave[q+i+1];
+            split^.filhos[i+1] := r^.filhos[q+i+2];
         end;
     end;
-
-    split := y;
 end;
 
 procedure adicionar_direita(r : BMais; pos : integer; k : integer; p : BMais);
@@ -227,21 +224,18 @@ function criaPagina(chave : integer; folha : boolean; num_chaves : integer) : BM
 
 var
     i : integer;
-    r : BMais;
 
 begin
-    new(r);
+    new(criaPagina);
 
-    r^.chave[0] := chave;
-    r^.num_chaves := num_chaves;
-    r^.folha := folha;
+    criaPagina^.chave[0] := chave;
+    criaPagina^.num_chaves := num_chaves;
+    criaPagina^.folha := folha;
     
     for i := 0 to ORDEM do
     begin
-        r^.filhos[i] := nil; 
+        criaPagina^.filhos[i] := nil; 
     end;
-
-    criaPagina := r;
 end;
 
 function inserir(r : BMais; chave : integer) : BMais;
