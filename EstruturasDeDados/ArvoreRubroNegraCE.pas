@@ -1,9 +1,10 @@
 program ArvoreRubroNegra;
 
-
+(* Enumeração para cores *)
 type
     cores = (VERMELHO, PRETO);
 
+(* Definição de registro para nó rubro negro *)
 type
     noRN = record
         info : integer;
@@ -12,6 +13,9 @@ type
         dir : ^noRN;
     end;
 
+(* Definição de tipos *)
+(* Manipulação de nó rubro negro *)
+(* Tipo para árvore rubro negra *)
 type
     DSRubroNegra = ^noRN;
     arvoreRN = ^DSRubroNegra;
@@ -19,6 +23,8 @@ type
 var
     r : arvoreRN;
 
+(* Função para criar árvore *)
+(* Cria nova árvore e atribui nil ao ponteiro armazenado *)
 function criar() : arvoreRN;
 begin
     new(criar);
@@ -26,11 +32,33 @@ begin
     criar^ := nil;
 end;
 
+(* Função para verificar se um nó é vazio *)
+(* Atribui true se vazio *)
 function vazia(r : DSRubroNegra) : boolean;
 begin
     vazia := (r = nil);
 end;
 
+function busca(r : DSRubroNegra; info : integer) : boolean;
+begin
+    if r = nil then
+        busca := false
+    
+    else if r^.info = info then
+    begin
+        busca := true;
+        exit;
+    end
+
+    else if r^.info > info then
+        busca := busca(r^.esq, info)
+
+    else
+        busca := busca(r^.dir, info);
+end;    
+
+(* Função para verificar cor do nó *)
+(* Atribui PRETO se vazio e a cor atual caso contrário *)
 function cor(r : DSRubroNegra) : cores;
 begin
     if vazia(r) then
@@ -39,6 +67,8 @@ begin
         cor := r^.cor;
 end;
 
+(* Procedimento para troca de cor *)
+(* Aplica inversão de cores em determinados nós caso entrem nas condicionais *)
 procedure troca_cor(r : DSRubroNegra);
 begin
     if r^.cor = VERMELHO then
@@ -63,6 +93,8 @@ begin
     end;
 end;
 
+(* Função para rotacionar nó à esquerda *)
+(* Rotaciona raiz para a esquerda, subindo o nó destino à raiz *)
 function rotacionar_esquerda(r : DSRubroNegra) : DSRubroNegra;
 begin
     rotacionar_esquerda := r^.dir;
@@ -73,6 +105,8 @@ begin
     r^.cor := VERMELHO;
 end;
 
+(* Função para rotacionar nó à direita *)
+(* Rotaciona raiz para a direita, subindo o nó destino à raiz *)
 function rotacionar_direita(r : DSRubroNegra) : DSRubroNegra;
 begin
     rotacionar_direita := r^.esq;
@@ -83,6 +117,8 @@ begin
     r^.cor := VERMELHO;
 end;
 
+(* Função para aplicar rotação dupla à esquerda *)
+(* Efetua a troca de cor e aplica rotações, à direita e à esquerda *)
 function mover_para_esquerda(r : DSRubroNegra) : DSRubroNegra;
 begin
     troca_cor(r);
@@ -97,6 +133,8 @@ begin
     mover_para_esquerda := r;
 end;
 
+(* Função para aplicar troca de cor e rotação a direita em nó *)
+(* Efetua troca de cor e aplica rotação no nó raiz *)
 function mover_para_direita(r : DSRubroNegra) : DSRubroNegra;
 begin
     troca_cor(r);
@@ -110,6 +148,8 @@ begin
     mover_para_direita := r;
 end;
 
+(* Função para balancear árvore após remoção *)
+(* Aplica balanceamento após remoção de determinado nó chave *)
 function balancear(r : DSRubroNegra) : DSRubroNegra;
 begin
     if (cor(r^.dir) = VERMELHO) then
@@ -124,6 +164,8 @@ begin
     balancear := r;
 end;
 
+(* Função cauda para inserção de nó rubro negro *)
+(* Se vazia insere um novo nó e aplica correções de cores no backtracking *)
 function inserir_aux(r : DSRubroNegra; info : integer ) : DSRubroNegra;
 begin
     if vazia(r) then
@@ -157,6 +199,8 @@ begin
     inserir_aux := r;
 end;
 
+(* Procedimento para inserção de chave em árvore rubro negra *)
+(* Chama função cauda e após verifica se o nó é raiz para mudança de cor *)
 procedure inserir(r : arvoreRN; info : integer);
 
 var aux : DSRubroNegra;
@@ -172,6 +216,96 @@ begin
     end;
 end;
 
+function remover_no_menor(r : DSRubroNegra) : DSRubroNegra;
+begin
+    if r^.esq = nil then
+    begin
+        dispose(r);
+        remover_no_menor := nil;
+        exit;
+    end;
+
+    if (cor(r^.esq) = PRETO) and (cor(r^.esq^.esq) = PRETO) then
+        r := mover_para_esquerda(r);
+
+    r^.esq := remover_no_menor(r^.esq);
+
+    remover_no_menor := balancear(r);
+end;
+
+function procurar_menor(r : DSRubroNegra) : DSRubroNegra;
+
+begin
+    procurar_menor := r;
+
+    while procurar_menor^.esq <> nil do
+        procurar_menor := procurar_menor^.esq;
+end;
+
+
+function remover_aux(r : DSRubroNegra; info : integer) : DSRubroNegra;
+
+var
+    aux : DSRubroNegra;
+
+begin
+    if info < r^.info then
+    begin
+        if ((cor(r^.esq) = PRETO) and (cor(r^.esq^.esq) = PRETO)) then
+            r := mover_para_esquerda(r);
+        
+        r^.esq := remover_aux(r^.esq, info);
+    end
+    else
+    begin
+        if (cor(r^.esq) = VERMELHO) then
+            r := rotacionar_direita(r);
+
+        if (info = r^.info) and (vazia(r^.dir)) then
+        begin
+            dispose(r);
+            remover_aux := nil;
+            exit;
+        end;
+
+        if (cor(r^.dir) = PRETO) and (cor(r^.dir^.esq) = PRETO) then
+            r := mover_para_direita(r);
+
+        if info = r^.info then
+        begin
+            aux := procurar_menor(r^.dir);
+
+            writeln(aux^.info);
+
+            r^.info := aux^.info;
+            r^.dir := remover_no_menor(r^.dir);
+        end
+        else
+            r^.dir := remover_aux(r^.dir, info);
+    end;
+    remover_aux := balancear(r);
+end;
+
+procedure remover(r : arvoreRN; info : integer);
+
+var aux : DSRubroNegra;
+
+begin
+    if (busca(r^, info) = false) then
+        exit;
+
+    r^ := remover_aux(r^, info);
+
+    if not vazia(r^) then
+    begin
+        aux := r^;
+        //writeln('deb');
+        aux^.cor := PRETO;
+        r^ := aux;
+    end;
+end;
+
+(* Procedimento cauda para impressão de rubro negra pre-order *)
 procedure imprimir_aux(r : DSRubroNegra);
 begin
     if r = nil then
@@ -189,11 +323,13 @@ begin
     imprimir_aux(r^.dir);
 end;
 
+(* Procedimento para impressão de rubro negra *)
 procedure imprimir(r : arvoreRN);
 begin
     imprimir_aux(r^);
 end;
 
+(* Procedimento para impressão por níveis de árvore rubro negra *)
 procedure imprimirNiveis(r : arvoreRN);
 
 var
@@ -265,6 +401,9 @@ begin
     inserir(r, 17);
     inserir(r, 1);
     inserir(r, 11);
+
+    remover(r, 18);
+    remover(r, 27);
 
     imprimir(r);
 
