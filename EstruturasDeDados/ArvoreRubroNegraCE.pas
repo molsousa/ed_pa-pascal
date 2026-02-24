@@ -1,3 +1,17 @@
+(* Árvore Rubro Negra caída à esquerda <3 *)
+(* Essa implementação segue as mesmas regras tradicionais, 
+    com um diferencial que todo nó vermelho cai à esquerda 
+    e nunca à direita *)
+(* Nessa implementação, a complexidade das operação é mantida *)
+
+(* Regras *)
+(*  
+    Todo nó inserido é inicialmente vermelho
+    A raiz é sempre preta
+    Todo nó vermelho é filho esquerdo de um nó pai preto
+    Todo nó vermelho possui dois filhos pretos ou nulos
+    Todo caminho simples contém a mesma quantidade de nós pretos
+*)
 program ArvoreRubroNegra;
 
 (* Enumeração para cores *)
@@ -39,6 +53,8 @@ begin
     vazia := (r = nil);
 end;
 
+(* Função de busca *)
+(* Atribui resultado booleano verdadeiro caso um elemento se encontrar na árvore *)
 function busca(r : DSRubroNegra; info : integer) : boolean;
 begin
     if r = nil then
@@ -216,6 +232,8 @@ begin
     end;
 end;
 
+(* Função para remover nó menor *)
+(* Aplica rotações e troca de cores se necessário e remove nó menor *)
 function remover_no_menor(r : DSRubroNegra) : DSRubroNegra;
 begin
     if r^.esq = nil then
@@ -233,6 +251,8 @@ begin
     remover_no_menor := balancear(r);
 end;
 
+(* Função para buscar menor nó *)
+(* Percorre até encontrar o nó mais a esquerda *)
 function procurar_menor(r : DSRubroNegra) : DSRubroNegra;
 
 begin
@@ -242,7 +262,8 @@ begin
         procurar_menor := procurar_menor^.esq;
 end;
 
-
+(* Função em cauda para remoção de nó rubro negro *)
+(* Aplica rotações e troca de cores após remoção para balancear árvore *)
 function remover_aux(r : DSRubroNegra; info : integer) : DSRubroNegra;
 
 var
@@ -286,6 +307,8 @@ begin
     remover_aux := balancear(r);
 end;
 
+(* Procedimento para remoção de chave em árvore rubro negra *)
+(* Após remoção, fixa a raiz como nó PRETO *)
 procedure remover(r : arvoreRN; info : integer);
 
 var aux : DSRubroNegra;
@@ -299,7 +322,6 @@ begin
     if not vazia(r^) then
     begin
         aux := r^;
-        //writeln('deb');
         aux^.cor := PRETO;
         r^ := aux;
     end;
@@ -403,7 +425,6 @@ begin
     inserir(r, 11);
 
     remover(r, 18);
-    remover(r, 27);
 
     imprimir(r);
 
