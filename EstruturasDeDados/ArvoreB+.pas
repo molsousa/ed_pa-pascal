@@ -1,8 +1,24 @@
+(*
+    Essa implementação de árvore B+ possui um número de chaves 
+    igual ao tamanho da ORDEM, o objetivo é facilitar o split
+    fazendo com que o número de chaves e filhos cheguem ao estágio
+    de overflow de forma literal não sendo necessário verificações
+    a mais. Essa implementação desconsidera o ponteiro para a página
+    pai por não incluir remoção. Além disso, em sua estrutura é possível
+    verificar se um nó é folha ou não para verificação de intervalos. 
+*)
 program ArvoreBMais;
 
+(* Constante para determinar a ORDEM da árvore *)
 const 
     ORDEM = 5;
 
+(* Definição de tipos de intervalo para impressão *)
+type
+    TipoIntervalo = (aberto, fechado);
+
+(* Definição de estrutura para B+ *)
+(* Para essa implementação, cada nó tem sua verificação de folha *)
 type
     ponteiro = record
         chave : array[0..ORDEM-1] of integer;
@@ -11,27 +27,36 @@ type
         folha : boolean;
     end;
 
+(* Definição de estrutura de nó para B+ *)
 type
     BMais = ^ponteiro;
 
 var
     r : BMais;
 
+(* Função para criar árvore B+ *)
+(* Atribui o valor nil para árvore B+ *)
 function criar() : BMais;
 begin
     criar := nil;
 end;
 
+(* Função para verificar se um nó é vazio *)
+(* Atribui o valor true se for vazia *)
 function vazia(r : BMais) : boolean;
 begin
     vazia := (r = nil);
 end;
 
+(* Função para verificar se um nó teve overflow *)
+(* Atribui o valor true se overflow *)
 function overflow(r : BMais) : boolean;
 begin
     overflow := (r^.num_chaves = ORDEM);
 end;
 
+(* Procedimento cauda para contar nós *)
+(* Atribui o número de total de nós à variável total *)
 procedure conta_nos_aux(r : BMais; var total : integer);
 
 var
@@ -51,6 +76,8 @@ begin
     end;
 end;
 
+(* Função chamadora para contar nós *)
+(* Atribui o número total de nós *)
 function conta_nos(r : BMais) : integer;
 
 begin
@@ -63,6 +90,8 @@ begin
     conta_nos_aux(r, conta_nos);
 end;
 
+(* Procedimento para corrigir intervalo de B+ *)
+(* Percorre em níveis os nós e engaveta para corrigir o intervalo de ida *)
 procedure corrigir_intervalo(r : BMais);
 
 var
@@ -106,11 +135,13 @@ begin
     begin
         atual := nos_intervalo[i];
         prox := nos_intervalo[i+1];
-
         atual^.filhos[ORDEM] := prox;
     end;
 end;
 
+(* Função para aplicar split a um nó *)
+(* Atribui um novo nó a direita do nó passado como parâmetro *)
+(* Atribui o valor da chave sucessora para a variável M *)
 function split(r : BMais; var m : integer) : BMais;
 
 var
@@ -154,6 +185,9 @@ begin
     end;
 end;
 
+(* Procedimento para adicionar chaves a direita *)
+(* Empurra novas chaves à direita, não faz verificação de overflow *)
+(* Adiciona novo filho se necessário *)
 procedure adicionar_direita(r : BMais; pos : integer; k : integer; p : BMais);
 
 var
@@ -171,6 +205,8 @@ begin
     r^.num_chaves := r^.num_chaves + 1; 
 end;
 
+(* Função para buscar posição para inserir nova chave *)
+(* Atribui o valor true se a chave já estiver na árvore (não permitindo valores repetidos) *)
 function busca_pos(r : BMais; chave : integer; var pos : integer) : boolean;
 
 var
@@ -195,6 +231,8 @@ begin
     busca_pos := false;
 end;
 
+(* Procedimento em cauda para inserir chave *)
+(* Insere chave em árvore B+, aplica split se necessário *)
 procedure inserir_aux(r : BMais; chave : integer);
 
 var
@@ -220,6 +258,8 @@ begin
     end;
 end;
 
+(* Função auxiliar para criar página B+ *)
+(* Atribui o valor de um novo nó B+ *)
 function criaPagina(chave : integer; folha : boolean; num_chaves : integer) : BMais;
 
 var
@@ -238,6 +278,8 @@ begin
     end;
 end;
 
+(* Função para inserir chave em B+ *)
+(* Atribui o valor de novo nó B+, muda a raiz se necessário *)
 function inserir(r : BMais; chave : integer) : BMais;
 
 var
@@ -273,6 +315,7 @@ begin
     end;
 end;
 
+(* Procedimento para imprimir intervalo completo de B+ *)
 procedure ler_intervalo(r : BMais);
 
 var
@@ -302,6 +345,7 @@ begin
     writeln;
 end;
 
+(* Procedimento para imprimir em níveis *)
 procedure imprimirNiveis(r : BMais);
 
 var
@@ -365,6 +409,56 @@ begin
     end;
 end;
 
+(* Procedimento para imprimir intervalo aberto *)
+procedure imprimir_aberto(r : BMais; a, b : integer);
+
+var i : integer;
+
+begin
+    if vazia(r) then
+        exit;
+
+    for i := 0 to r^.num_chaves-1 do
+        if (r^.chave[i] > a) and (r^.chave[i] < b) then
+            write(r^.chave[i], ' ');
+
+    imprimir_aberto(r^.filhos[ORDEM], a, b);
+end;
+
+(* Procedimento para imprimir intervalo fechado *)
+procedure imprimir_fechado(r : BMais; a, b : integer);
+
+var i : integer;
+
+begin
+    if vazia(r) then
+        exit;
+
+    for i := 0 to r^.num_chaves-1 do
+        if (r^.chave[i] >= a) and (r^.chave[i] <= b) then
+            write(r^.chave[i], ' ');
+
+    imprimir_fechado(r^.filhos[ORDEM], a, b);
+end;
+
+(* Procedimento de chamada para impressão em intervalo *)
+(* Recebe uma enumeração como parâmetro para indicar se a impressão é em intervalo aberto ou fechado *)
+procedure imprimir_intervalo(r : BMais; a, b : integer; af : TipoIntervalo);
+begin
+    if vazia(r) then
+        exit;
+
+    while not vazia(r^.filhos[0]) do
+        r := r^.filhos[0];
+
+    if af = aberto then
+        imprimir_aberto(r, a, b)
+    else
+        imprimir_fechado(r, a, b);
+
+    writeln;
+end;
+
 begin
     r := criar();
 
@@ -395,4 +489,6 @@ begin
     imprimirNiveis(r);
 
     ler_intervalo(r);
+
+    imprimir_intervalo(r, 13, 32, fechado);
 end.
