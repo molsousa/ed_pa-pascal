@@ -7,7 +7,7 @@ type
     vetor = array[indice] of integer;
 
 var
-    a : vetor = (12, 7, 89, 34, 23, 56, 91, 44, 18, 3, 67, 72, 5, 48, 29, 81, 14, 
+    a : vetor = (0, 7, 89, 34, 23, 56, 91, 44, 18, 3, 67, 72, 5, 48, 29, 81, 14, 
                 95, 37, 62, 11, 76, 53, 9, 40, 85, 21, 98, 16, 70);
     i : integer;
 
@@ -18,7 +18,7 @@ var
     x : integer;
 
 begin
-    for i := 1 to n-1 do
+    for i := 2 to n-1 do
     begin
         min := i;
 
@@ -32,6 +32,7 @@ begin
     end;
 end;
 
+(* Em caso de uso do insertionSort, a primeira posição do vetor é usada como sentinela *)
 procedure insertionSort(var a : vetor; n : integer);
 
 var
@@ -54,10 +55,41 @@ begin
     end;
 end;
 
-begin
-    insertionSort(a, TAM);
+procedure shellSort(var a : vetor; n : integer);
+label 999;
+var
+    i, j, h : integer;
+    x : integer;
 
-    for i := 0 to TAM do
+begin
+    h := 1;
+
+    repeat h := 3 * h + 1 until h >= n;
+    repeat
+        h := Trunc(h / 3);
+
+        for i := h + 1 to n do
+        begin
+            x := a[i];
+            j := i;
+
+            while a[j - h] > x do
+            begin
+                a[j] := a[j-h];
+                j := j-h;
+
+                if j <= h then
+                    goto 999;
+            end;
+            999: a[j] := x;
+        end;
+    until h = 1;
+end;
+
+begin
+    shellSort(a, TAM);
+
+    for i := 1 to TAM do
         write(a[i], ' ');
 
     writeln;
