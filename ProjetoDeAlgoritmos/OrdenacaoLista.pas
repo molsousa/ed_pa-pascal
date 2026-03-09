@@ -1,22 +1,33 @@
+{
+    Ordenação em lista encadeada.
+}
 program OrdenacaoLista;
 
+
+{
+    Definição de lista encadeada.
+}
 type
     no = record
              info : integer;
              prox : ^no;
          end;
-
-type
     Lista = ^no;
 
 var
     l : Lista;
 
+{
+    Procedimento para criar lista.
+}
 procedure criar(var l : Lista);
 begin
     l := nil;
 end;
 
+{
+    Procedimento para inserir na cabeça.
+}
 procedure inserir(var l : Lista; info : integer);
 var aux : Lista;
 begin
@@ -28,6 +39,9 @@ begin
     l := aux;
 end;
 
+{
+    Procedimento para imprimir lista
+}
 procedure imprimir(l : Lista);
 begin
     if l <> nil then
@@ -40,6 +54,13 @@ begin
         writeln('NULL');
 end;
 
+{
+    Procedimento para aplicar selection sort.
+    Seleciona o menor valor e joga para a posição do mínimo.
+    Complexidade:
+        No pior caso: O(n²).
+        No melhor caso: O(n²)
+}
 procedure selectionLista(var l : Lista);
 
 var
@@ -73,11 +94,11 @@ end;
 begin
     criar(l);
 
+    inserir(l, 21);
     inserir(l, 24);
     inserir(l, 7);
     inserir(l, 12);
     inserir(l, 13);
-    inserir(l, 21);
     inserir(l, 5);
     inserir(l, 3);
     inserir(l, 17);

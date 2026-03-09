@@ -11,7 +11,7 @@ program ArvoreBMais;
 
 (* Constante para determinar a ORDEM da árvore *)
 const 
-    ORDEM = 5;
+    ORDEM = 7;
 
 (* Definição de tipos de intervalo para impressão *)
 type
@@ -36,9 +36,9 @@ var
 
 (* Função para criar árvore B+ *)
 (* Atribui o valor nil para árvore B+ *)
-function criar() : BMais;
+procedure criar(var r : BMais);
 begin
-    criar := nil;
+    r := nil;
 end;
 
 (* Função para verificar se um nó é vazio *)
@@ -280,7 +280,7 @@ end;
 
 (* Função para inserir chave em B+ *)
 (* Atribui o valor de novo nó B+, muda a raiz se necessário *)
-function inserir(r : BMais; chave : integer) : BMais;
+procedure inserir(var r : BMais; chave : integer);
 
 var
     x, nova_raiz : BMais;
@@ -289,7 +289,7 @@ var
 begin
     if vazia(r) then
     begin
-       inserir := criaPagina(chave, true, 1);
+       r := criaPagina(chave, true, 1);
     end
     else
     begin
@@ -306,12 +306,12 @@ begin
             for i := Trunc((ORDEM/2)+1) to ORDEM-1 do
                 r^.filhos[i] := nil;
 
-            inserir := nova_raiz;
+            corrigir_intervalo(r);
+            r := nova_raiz;
+
             exit;
         end;
         corrigir_intervalo(r);
-
-        inserir := r;
     end;
 end;
 
@@ -460,35 +460,45 @@ begin
 end;
 
 begin
-    r := criar();
+    criar(r);
 
-    r := inserir(r, 9);
-    r := inserir(r, 17);
-    r := inserir(r, 11);
-    r := inserir(r, 28);
-    r := inserir(r, 12);
-    r := inserir(r, 4);
-    r := inserir(r, 8);
-    r := inserir(r, 2);
-    r := inserir(r, 7);
-    r := inserir(r, 32);
-    r := inserir(r, 19);
-    r := inserir(r, 5);
-    r := inserir(r, 24);
-    r := inserir(r, 35);
-    r := inserir(r, 1);
-    r := inserir(r, 20);
-    r := inserir(r, 27);
-    r := inserir(r, 25);
-    r := inserir(r, 45);
-    r := inserir(r, 39);
-    r := inserir(r, 23);
-    r := inserir(r, 21);
-    r := inserir(r, 22);
+    inserir(r, 9);
+    inserir(r, 17);
+    inserir(r, 11);
+    inserir(r, 28);
+    inserir(r, 12);
+    inserir(r, 4);
+    inserir(r, 8);
+    inserir(r, 2);
+    inserir(r, 7);
+    inserir(r, 32);
+    inserir(r, 19);
+    inserir(r, 5);
+    inserir(r, 24);
+    inserir(r, 35);
+    inserir(r, 1);
+    inserir(r, 20);
+    inserir(r, 27);
+    inserir(r, 25);
+    inserir(r, 45);
+    inserir(r, 39);
+    inserir(r, 23);
+    inserir(r, 21);
+    inserir(r, 22);
+    inserir(r, 90);
+    inserir(r, 56);
+    inserir(r, 87);
+    inserir(r, 65);
+    inserir(r, 75);
+    inserir(r, 52);
+    inserir(r, 71);
+    inserir(r, 60);
+    inserir(r, 14);
+    inserir(r, 26);
 
     imprimirNiveis(r);
 
     ler_intervalo(r);
 
-    imprimir_intervalo(r, 13, 32, fechado);
+    imprimir_intervalo(r, 13, 70, fechado);
 end.
