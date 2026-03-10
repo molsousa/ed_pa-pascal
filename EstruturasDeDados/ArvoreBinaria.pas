@@ -1,24 +1,42 @@
+(*
+ * Árvore binária.
+ * Possui um ponteiro pra esquerda e direita para
+   distribuir as informações menores e maiores respectivamente.
+ * Caso a árvore binária for completa, a busca tem uma complexidade de
+   O(log n).
+ * Caso a árvore binária tenha valores inseridos em ordem crescente ou
+   decrescente a busca tem complexidade O(n). No pior dos casos vira uma
+   lista encadeada.
+*)
+
 program ArvoreBinaria;
 
 type
-    ponteiro = record
+    noAB = record
         info : integer;
-        esq : ^ponteiro;
-        dir : ^ponteiro;
+        esq : ^noAB;
+        dir : ^noAB;
     end;
-
-type
-    Arvore = ^ponteiro;
+    Arvore = ^noAB;
 
 var
     r : Arvore;
 
-function criar() : Arvore;
+(* Procedimento para criar árvore binária *)
+(* Atribui nil como ponto de parada *)
+procedure criar(var r : Arvore);
 begin
-    criar := nil;
+    r := nil;
 end;
 
-function inserir(r : Arvore; info : integer) : Arvore;
+(* Procedimento para inserir informação *)
+(* Caso a informação seja menor que a informação no nó atual
+   cai para a esquerda.
+ * Caso a informação seja maior que a informação do nó atual
+   cai para a direita.
+ * Insere sempre nova informação como folha.
+ *)
+procedure inserir(var r : Arvore; info : integer);
 begin
     if r = nil then
     begin
@@ -31,15 +49,14 @@ begin
     else
     begin
         if r^.info > info then
-            r^.esq := inserir(r^.esq, info)
+            inserir(r^.esq, info)
 
         else
-            r^.dir := inserir(r^.dir, info);
+            inserir(r^.dir, info);
     end;
-
-    inserir := r;
 end;
 
+(* Função para buscar valor máximo *)
 function maximo(r : Arvore) : integer;
 
 var
@@ -54,6 +71,7 @@ begin
     maximo := aux^.info;
 end;
 
+(* Função para buscar valor mínimo *)
 function minimo(r : Arvore) : integer;
 
 var
@@ -68,19 +86,24 @@ begin
     minimo := aux^.info;
 end;
 
-function remover(r : Arvore; info : integer) : Arvore;
+(* Procedimento para remover informação *)
+(* Caso o elemento encontrado seja folha, libera e atribui a nil*)
+(* Caso o elemento seja nó interno, busca o valor na folha recursivamente
+    e atribui ao nó interno atual, após, busca o elemento na folha para remover. *)
+(* Caso não encontre o elemento buscado, finaliza a recursão *)
+procedure remover(var r : Arvore; info : integer);
 
 begin
     if r = nil then
-        remover := r
+        exit
 
     else
     begin
         if r^.info > info then
-            r^.esq := remover(r^.esq, info)
+            remover(r^.esq, info)
 
         else if r^.info < info then
-            r^.dir := remover(r^.dir, info)
+            remover(r^.dir, info)
 
         else
         begin
@@ -93,19 +116,20 @@ begin
             else if r^.esq = nil then
             begin
                 r^.info := minimo(r^.dir);
-                r^.dir := remover(r^.dir, r^.info);
+                remover(r^.dir, r^.info);
             end
             else
             begin
                 r^.info := maximo(r^.esq);
-                r^.esq := remover(r^.esq, r^.info);
+                remover(r^.esq, r^.info);
             end;
         end;
     end;
-
-    remover := r;
 end;
 
+(* Procedimento para imprimir árvore em pre-order *)
+(* Imprime a raiz, imprime cada um dos elementos na esquerda *)
+(* Na volta, cai pra direita e imprime os elementos da direita *)
 procedure imprimir(r : Arvore);
 begin
     if r = nil then
@@ -118,6 +142,7 @@ begin
     end;
 end;
 
+(* Procedimento para imprimir por níveis *)
 procedure imprimirNiveis(r : Arvore);
 type
     vetArvore = array[0..1000] of Arvore;
@@ -128,9 +153,7 @@ var
     i, fim, inicio, nivel : int64;
 
 begin
-    if r = nil then
-
-    else
+    if r <> nil then
     begin
         fim := 0;
         inicio := 0;
@@ -171,16 +194,24 @@ begin
 end;
 
 begin
-    r := criar();
+    criar(r);
 
-    r := inserir(r, 11);
-    r := inserir(r, 5);
-    r := inserir(r, 24);
-    r := inserir(r, 2);
-    r := inserir(r, 6);
-    r := inserir(r, 18);
-    r := inserir(r, 9);
-    r := inserir(r, 34);
+    inserir(r, 11);
+    inserir(r, 5);
+    inserir(r, 24);
+    inserir(r, 2);
+    inserir(r, 6);
+    inserir(r, 18);
+    inserir(r, 9);
+    inserir(r, 34);
+
+    imprimir(r);
+
+    imprimirNiveis(r);
+
+    writeln;
+
+    remover(r, 11);
 
     imprimirNiveis(r);
 end.
