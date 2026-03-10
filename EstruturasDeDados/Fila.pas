@@ -1,5 +1,15 @@
+(* Implementação de fila usando lista encadeada *)
+(* Um novo elemento é sempre inserido ao final da fila *)
+(* A remoção sempre ocorre com o primeiro elemento *)
+(* Complexidade:
+    Inserir: O(1)
+    Remover: O(1)
+*)
+(* Para a implementação de fila, é utilizado dois ponteiros para não
+   precisar percorrer a lista inteira para inserção *)
 program FilaDinamica;
 
+(* Definição de fila dinâmica *)
 type
     lista = record
             info : integer;
@@ -15,7 +25,8 @@ type
 var
     f : Fila;
 
-
+(* Procedimento para criar nova fila *)
+(* Aloca fila e atribui nil para primeiro e último *)
 procedure criar(var f : Fila);
 begin
     new(f);
@@ -24,11 +35,15 @@ begin
     f^.ultimo := nil;
 end;
 
+(* Função para verificar se uma fila é vazia *)
+(* Retorna true se vazia *)
 function vazia(f : Fila) : boolean;
 begin
     vazia := (f^.primeiro = nil);
 end;
 
+(* Procedimento para enfileirar novo elemento *)
+(* Elemento inserido sempre no final da lista de elementos *)
 procedure queue(f : Fila; info : integer);
 
 var
@@ -49,6 +64,8 @@ begin
     f^.ultimo := x;
 end;
 
+(* Procedimento para defileirar elemento *)
+(* Remove o primeiro elemento inserido na fila *)
 procedure dequeue(f : Fila);
 
 var
@@ -67,6 +84,7 @@ begin
     end;
 end;
 
+(* Procedimento para imprimir lista encadeada *)
 procedure print_aux(l : No);
 begin
     if l = nil then
@@ -79,11 +97,11 @@ begin
     end;
 end;
 
+(* Procedimento para chamar procedimento para imprimir a lista contida na estrutura de fila *)
 procedure print(f : Fila);
 begin
     print_aux(f^.primeiro);
 end;
-
 
 begin
     criar(f);
