@@ -16,6 +16,14 @@ type
     Indice = 0..M-1;
     TipoDicionario = array[Indice] of TipoItem;
 
+procedure GeraPesos(var p : TipoPesos);
+var i : integer;
+begin
+    randomize;
+    for i := 1 to n do
+        p[i] := trunc(10000000 * random + 1);
+end;
+
 function h(Chave : TipoChave; p : TipoPesos) : Indice;
 var i, soma : integer;
 begin
