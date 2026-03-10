@@ -11,6 +11,15 @@ var
                 95, 37, 62, 11, 76, 53, 9, 40, 85, 21, 98, 16, 70);
     i : integer;
 
+(* Ordenação por seleção *)
+(* Seleciona o menor elemento do vetor e o move ao início *)
+(* O algoritmo é instável pois troca valores iguais *)
+(*
+ * Complexidade:
+ *      Pior caso: O(n²)
+ *      Caso médio: O(n²)
+ *      Melhor caso: O(n²)
+*)
 procedure selectionSort(var a : vetor; n : integer);
 
 var
@@ -32,7 +41,16 @@ begin
     end;
 end;
 
+(* Ordenção por inserção *)
+(* Insere os elementos na posição correta em relação aos antecessores *)
 (* Em caso de uso do insertionSort, a primeira posição do vetor é usada como sentinela *)
+(* O algoritmo é estável *)
+(*
+ * Complexidade:
+ *      Pior caso: O(n²)
+ *      Médio caso: O(n²)
+ *      Melhor caso: O(n)
+*)
 procedure insertionSort(var a : vetor; n : integer);
 
 var
@@ -55,6 +73,16 @@ begin
     end;
 end;
 
+(* Ordenação shell, mais eficiente que os demais *)
+(* Compara elementos separados por intervalos (h) *)
+(* Algoritmo mais rápido de complexidade quadrática *)
+(* O algoritmo não é estável, portanto pode alterar a ordem de elementos repetidos *)
+(*
+ * Complexidade:
+ *      Pior caso: O(n²)
+ *      Caso médio: O(n log n)
+ *      Melhor caso: O(n log n)
+*)
 procedure shellSort(var a : vetor; n : integer);
 label 999;
 var
