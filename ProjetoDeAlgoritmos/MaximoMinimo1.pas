@@ -1,7 +1,8 @@
-program MaximoMinimo1;
 (* Encontrar valores máximo e mínimo de um vetor *)
 (* No melhor caso: 2(n-1) *)
 (* No pior caso: 2(n-1) *)
+program MaximoMinimo1;
+
 const
     n = 10;
 

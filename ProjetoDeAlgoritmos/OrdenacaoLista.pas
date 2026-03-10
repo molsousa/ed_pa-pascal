@@ -1,6 +1,6 @@
-{
-    Ordenação em lista encadeada.
-}
+(* Ordenação em lista encadeada. *)
+(* SelectionSort [X] *)
+(* MergeSort [] *)
 program OrdenacaoLista;
 
 
@@ -17,17 +17,15 @@ type
 var
     l : Lista;
 
-{
-    Procedimento para criar lista.
-}
+(* Procedimento para criar lista *)
+(* Atribui nil como ponto de parada *)
 procedure criar(var l : Lista);
 begin
     l := nil;
 end;
 
-{
-    Procedimento para inserir na cabeça.
-}
+(* Procedimento para inserir na cabeça *)
+(* Insere nova informação na cabeça da lista *)
 procedure inserir(var l : Lista; info : integer);
 var aux : Lista;
 begin
@@ -39,9 +37,22 @@ begin
     l := aux;
 end;
 
-{
-    Procedimento para imprimir lista
-}
+(* Procedimento para inserir na cauda *)
+(* Insere nova informação ao final da lista *)
+procedure inserir_cauda(var l : Lista; info : integer);
+begin
+    if l = nil then
+    begin
+        new(l);
+        l^.info := info;
+        l^.prox := nil;
+    end
+    else
+        inserir_cauda(l^.prox, info);
+end;
+
+(* Procedimento para imprimir lista *)
+(* Imprime nil ao final para encerrar a recursão *)
 procedure imprimir(l : Lista);
 begin
     if l <> nil then
@@ -51,16 +62,16 @@ begin
         imprimir(l^.prox);
     end
     else
-        writeln('NULL');
+        writeln('nil');
 end;
 
-{
-    Procedimento para aplicar selection sort.
-    Seleciona o menor valor e joga para a posição do mínimo.
-    Complexidade:
-        No pior caso: O(n²).
+(*
+*   Procedimento para aplicar selection sort.
+*   Seleciona o menor valor e joga para a posição do mínimo.
+*   Complexidade:
+        No pior caso: O(n²)
         No melhor caso: O(n²)
-}
+*)
 procedure selectionLista(var l : Lista);
 
 var
@@ -102,6 +113,8 @@ begin
     inserir(l, 5);
     inserir(l, 3);
     inserir(l, 17);
+
+    inserir_cauda(l, 1);
 
     selectionLista(l);
 

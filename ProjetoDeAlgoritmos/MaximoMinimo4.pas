@@ -1,3 +1,9 @@
+(* Utiliza paradigma de divisão e conquista para encontrar
+ *  menor e maior valor em vetor.
+ * No melhor caso: 3n/2-2
+ * No pior caso: 3n/2-2
+*)
+
 program MaximoMinimo4;
 
 const
