@@ -1,23 +1,45 @@
+(* Insere elementos linearmente *)
+(* Pode ter valores inseridos na cabeça, cauda ou meio *)
+(* Não é necessário remanejar itens após uma inserção no meio *)
+(* Inserção na cabeça: O(1) *)
+(* Inserção na cauda: O(n) *)
+(* Inserção no meio: médio caso N/2-1 *)
 program ListaEncadeada;
 
+(* Definição de tipo para Lista encadeada *)
 type
     ponteiro = record
-        info : integer;
-        prox : ^ponteiro;
-    end;
-
-type
+            info : integer;
+            prox : ^ponteiro;
+        end;
     Lista = ^ponteiro;
 
 var
     l : Lista;
 
-function criar() : Lista;
+(* Procedimento para criar lista *)
+(* Utiliza nil como ponto de parada *)
+procedure criar(var l : Lista);
 begin
-    criar := nil;
+    l := nil;
 end;
 
-function inserir(l : Lista; info : integer) : Lista;
+(* Procedimento para inserir elemento no início da lista *)
+(* Insere informação logo no início *)
+procedure inserir_cabeca(var l : Lista; info : integer);
+var aux : Lista;
+begin
+    new(aux);
+
+    aux^.info := info;
+    aux^.prox := l;
+
+    l := aux;
+end;
+
+(* Procedimento para inserir elemento no fim da lista *)
+(* Insere informação ao final da lista *)
+procedure inserir(var l : Lista; info : integer);
 
 begin
     if l = nil then
@@ -28,20 +50,21 @@ begin
     end
     else
     begin
-        l^.prox := inserir(l^.prox, info);
+        inserir(l^.prox, info);
     end;
-
-    inserir := l;
 end;
 
-function remover(l : Lista; info : integer) : Lista;
+(* Procedimento para remover elemento desejado *)
+(* No melhor caso o elemento está no início, no pior é necessário
+   percorrer toda a lista para remover *)
+procedure remover(var l : Lista; info : integer);
 
 var
     aux : Lista;
 
 begin
     if l = nil then
-        remover := l
+        exit
 
     else
     begin
@@ -53,13 +76,12 @@ begin
         end
         else
         begin
-            l^.prox := remover(l^.prox, info);
+            remover(l^.prox, info);
         end;
     end;
-
-    remover := l;
 end;
 
+(* Função para imprimir lista encadeada *)
 procedure imprimir(l : Lista);
 begin
     if l = nil then
@@ -75,15 +97,17 @@ begin
 end;
 
 begin
-    l := criar();
+    criar(l);
 
-    l := inserir(l, 5);
-    l := inserir(l, 2);
-    l := inserir(l, 7);
-    l := inserir(l, 9);
-    l := inserir(l, 3);
+    inserir(l, 5);
+    inserir(l, 2);
+    inserir(l, 7);
+    inserir(l, 9);
+    inserir(l, 3);
 
-    l := remover(l, 7);
+    inserir_cabeca(l, 8);
+
+    remover(l, 7);
 
     imprimir(l);
 end.

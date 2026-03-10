@@ -2,17 +2,13 @@ program FilaDinamica;
 
 type
     lista = record
-        info : integer;
-        prox : ^lista;
-    end;
-
-type
+            info : integer;
+            prox : ^lista;
+        end;
     DSFila = record
-        primeiro : ^lista;
-        ultimo : ^lista;
-    end;
-
-type
+            primeiro : ^lista;
+            ultimo : ^lista;
+        end;
     Fila = ^DSFila;
     No = ^lista;
 
@@ -20,12 +16,12 @@ var
     f : Fila;
 
 
-function criar() : Fila;
+procedure criar(var f : Fila);
 begin
-    new(criar);
+    new(f);
 
-    criar^.primeiro := nil;
-    criar^.ultimo := nil;
+    f^.primeiro := nil;
+    f^.ultimo := nil;
 end;
 
 function vazia(f : Fila) : boolean;
@@ -90,7 +86,7 @@ end;
 
 
 begin
-    f := criar();
+    criar(f);
 
     queue(f, 5);
     queue(f, 12);

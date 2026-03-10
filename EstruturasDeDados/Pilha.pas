@@ -2,27 +2,23 @@ program PilhaDinamica;
 
 type
     lista = record
-        info : integer;
-        prox : ^lista;
-    end;
-
-type
+            info : integer;
+            prox : ^lista;
+        end;
     DSPilha = record
-        topo : ^lista;
-    end;
-
-type
+            topo : ^lista;
+        end;
     Pilha = ^DSPilha;
     No = ^lista;
 
 var
     p : Pilha;
 
-function criar() : Pilha;
+procedure criar(var p : Pilha);
 begin
-    new(criar);
+    new(p);
 
-    criar^.topo := nil;
+    p^.topo := nil;
 end;
 
 function vazia(p : Pilha) : boolean;
@@ -75,7 +71,7 @@ begin
 end;
 
 begin
-    p := criar();
+    criar(p);
 
     push(p, 5);
     push(p, 12);
@@ -86,6 +82,7 @@ begin
     push(p, 1);
 
     print(p);
+    writeln;
 
     pop(p);
     pop(p);
