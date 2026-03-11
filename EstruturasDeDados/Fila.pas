@@ -84,21 +84,20 @@ begin
     end;
 end;
 
-(* Procedimento para imprimir lista encadeada *)
-procedure print_aux(l : No);
-begin
-    if l = nil then
-        writeln('nil')
-
-    else
-    begin
-        write('|',l^.info, '|->');
-        print_aux(l^.prox);
-    end;
-end;
-
 (* Procedimento para chamar procedimento para imprimir a lista contida na estrutura de fila *)
 procedure print(f : Fila);
+    (* Procedimento para imprimir lista encadeada *)
+    procedure print_aux(l : No);
+    begin
+        if l = nil then
+            writeln('nil')
+
+        else
+        begin
+            write('|',l^.info, '|->');
+            print_aux(l^.prox);
+        end;
+    end;
 begin
     print_aux(f^.primeiro);
 end;

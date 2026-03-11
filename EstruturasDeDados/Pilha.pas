@@ -69,21 +69,21 @@ begin
     end;
 end;
 
-(* Procedimento para imprimir lista encadeada *)
-procedure print_aux(l : No);
-begin
-    if l = nil then
-        writeln('nil')
-
-    else
-    begin
-        writeln('|', l^.info:2, '|');
-        print_aux(l^.prox);
-    end;
-end;
 
 (* Procedimento para chamar procedimento para imprimir a lista contida na estrutura de pilha *)
 procedure print(p : Pilha);
+    (* Procedimento para imprimir lista encadeada *)
+    procedure print_aux(l : No);
+    begin
+        if l = nil then
+            writeln('nil')
+
+        else
+        begin
+            writeln('|', l^.info:2, '|');
+            print_aux(l^.prox);
+        end;
+    end;
 begin
     print_aux(p^.topo);    
 end;

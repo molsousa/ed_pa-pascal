@@ -23,14 +23,9 @@ type
 
 // criação de variaveis para testar o grafo
 var
-    aux : apontador;
-    i : integer;
-    v1, v2, adj : TipoValorVertice;
+    v1, v2 : TipoValorVertice;
     peso : TipoPeso;
     grafo : tipografo;
-    nVertices : TipoValorVertice;
-    nArestas : 0..MaxNumArestas;
-    fimListaAdj : boolean;
 
 // Procedimento para criação de um grafo
 procedure FGVazio(var Grafo : TipoGrafo);
@@ -115,7 +110,7 @@ begin
         fimListaAdj := true;
 end;
 
-// Procedimento para retirar uma aresta do grafo
+// Procedimento para retirar uma aresta
 procedure retiraAresta(var v1, v2 : TipoValorVertice; var peso : TipoPeso; var grafo : TipoGrafo);
 begin
     if grafo.mat[v1, v2] = 0 then
@@ -153,82 +148,35 @@ begin
 end;
 
 begin
-    write('Número vértices: ');
-    readln(nVertices);
-    write('Número arestas: ');
-    readln(nArestas);
-
-    grafo.NumVertices := nVertices;
-    grafo.NumArestas := 0;
+    grafo.NumVertices := 4;
+    grafo.NumArestas := 4;
 
     FGVazio(grafo);
 
-    for i := 0 to nArestas-1 do
-    begin
-        write('Insere v1, v2, peso: ');
-        readln(v1, v2, peso);
+    v1 := 1;
+    v2 := 0;
+    peso := 7;
+    InsereAresta(v1, v2, peso, grafo);
+    InsereAresta(v2, v1, peso, grafo);
 
-        InsereAresta(v1, v2, peso, grafo);
-        InsereAresta(v2, v1, peso, grafo);
-    end;
+    v1 := 2;
+    v2 := 1;
+    peso := 4;
+    InsereAresta(v1, v2, peso, grafo);
+    InsereAresta(v2, v1, peso, grafo);
 
-    imprimeGrafo(grafo);
-    readln;
+    v1 := 0;
+    v2 := 3;
+    peso := 12;
+    InsereAresta(v1, v2, peso, grafo);
+    InsereAresta(v2, v1, peso, grafo);
 
-    write('insere v1, v2, peso:' );
-    readln(v1, v2, peso);
-
-    if ExisteAresta(v1, v2, grafo) then
-        writeln('Aresta já existe')
-
-    else
-    begin
-        grafo.NumArestas := grafo.NumArestas + 1;
-        InsereAresta(v1, v2, peso, grafo);
-        InsereAresta(v2, v1, peso, grafo);
-    end;
-
-    imprimeGrafo(grafo);
-    readln;
-
-    write('Lista adjacentes de: ');
-    read(v1);
-
-    if not ListaAdjVazia(v1, grafo) then
-    begin
-        aux := PrimeiroListaAdj(v1, grafo);
-        fimListaAdj := false;
-
-        while not fimListaAdj do
-        begin
-            proxAdj(v1, grafo, adj, peso, aux, fimListaAdj);
-            write(adj:2, ' (', peso, ')');
-        end;
-        writeln;
-        readln;
-    end;
-
-    write('Retira aresta v1, v2: ');
-    readln(v1, v2);
-
-    if ExisteAresta(v1, v2, grafo) then
-    begin
-        grafo.NumArestas := grafo.NumArestas-1;
-        retiraAresta(v1, v2, peso, grafo);
-        retiraAresta(v2, v1, peso, grafo);
-    end
-    else
-        writeln('Aresta não existe');
+    v1 := 2;
+    v2 := 3;
+    peso := 2;
+    InsereAresta(v1, v2, peso, grafo);
+    InsereAresta(v2, v1, peso, grafo);
 
     imprimeGrafo(grafo);
     readln;
-
-    write('Existe aresta v1, v2: ');
-    readln(v1, v2);
-
-    if ExisteAresta(v1, v2, grafo) then
-        writeln('sim')
-
-    else
-        writeln('não');
 end.

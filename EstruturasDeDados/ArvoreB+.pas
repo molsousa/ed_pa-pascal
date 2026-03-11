@@ -55,30 +55,30 @@ begin
     overflow := (r^.num_chaves = ORDEM);
 end;
 
-(* Procedimento cauda para contar nós *)
-(* Atribui o número de total de nós à variável total *)
-procedure conta_nos_aux(r : BMais; var total : integer);
-
-var
-    i : integer;
-
-begin
-    if vazia(r) then
-
-    else
-    begin
-        total := total + 1;
-
-        for i := 0 to r^.num_chaves do
-        begin
-            conta_nos_aux(r^.filhos[i], total);
-        end;
-    end;
-end;
 
 (* Função chamadora para contar nós *)
 (* Atribui o número total de nós *)
 function conta_nos(r : BMais) : integer;
+    (* Procedimento cauda para contar nós *)
+    (* Atribui o número de total de nós à variável total *)
+    procedure conta_nos_aux(r : BMais; var total : integer);
+
+    var
+        i : integer;
+
+    begin
+        if vazia(r) then
+
+        else
+        begin
+            total := total + 1;
+
+            for i := 0 to r^.num_chaves do
+            begin
+                conta_nos_aux(r^.filhos[i], total);
+            end;
+        end;
+    end;
 
 begin
     if vazia(r) then
@@ -409,41 +409,41 @@ begin
     end;
 end;
 
-(* Procedimento para imprimir intervalo aberto *)
-procedure imprimir_aberto(r : BMais; a, b : integer);
-
-var i : integer;
-
-begin
-    if vazia(r) then
-        exit;
-
-    for i := 0 to r^.num_chaves-1 do
-        if (r^.chave[i] > a) and (r^.chave[i] < b) then
-            write(r^.chave[i], ' ');
-
-    imprimir_aberto(r^.filhos[ORDEM], a, b);
-end;
-
-(* Procedimento para imprimir intervalo fechado *)
-procedure imprimir_fechado(r : BMais; a, b : integer);
-
-var i : integer;
-
-begin
-    if vazia(r) then
-        exit;
-
-    for i := 0 to r^.num_chaves-1 do
-        if (r^.chave[i] >= a) and (r^.chave[i] <= b) then
-            write(r^.chave[i], ' ');
-
-    imprimir_fechado(r^.filhos[ORDEM], a, b);
-end;
 
 (* Procedimento de chamada para impressão em intervalo *)
 (* Recebe uma enumeração como parâmetro para indicar se a impressão é em intervalo aberto ou fechado *)
 procedure imprimir_intervalo(r : BMais; a, b : integer; af : TipoIntervalo);
+    (* Procedimento para imprimir intervalo aberto *)
+    procedure imprimir_aberto(r : BMais; a, b : integer);
+
+    var i : integer;
+
+    begin
+        if vazia(r) then
+            exit;
+
+        for i := 0 to r^.num_chaves-1 do
+            if (r^.chave[i] > a) and (r^.chave[i] < b) then
+                write(r^.chave[i], ' ');
+
+        imprimir_aberto(r^.filhos[ORDEM], a, b);
+    end;
+
+    (* Procedimento para imprimir intervalo fechado *)
+    procedure imprimir_fechado(r : BMais; a, b : integer);
+
+    var i : integer;
+
+    begin
+        if vazia(r) then
+            exit;
+
+        for i := 0 to r^.num_chaves-1 do
+            if (r^.chave[i] >= a) and (r^.chave[i] <= b) then
+                write(r^.chave[i], ' ');
+
+        imprimir_fechado(r^.filhos[ORDEM], a, b);
+    end;
 begin
     if vazia(r) then
         exit;
